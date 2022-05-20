@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+</head>
+<link rel="stylesheet" type="text/css" href="style.css">
+<title>3D Art Exhibit by Florence Chang</title>
+</head>
+<body>
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r90/three.min.js"></script>-->
+<!--<script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>-->
+<!--<script type="importmap">
+    {
+        "imports": {
+            "three": "../build/three.module.js"
+        }
+    }-->
+<script>
+import * as THREE from 'three';
+//source: https://threejs.org/docs/#manual/en/introduction/Loading-3D-models
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+
+//source: https://threejs.org/docs/#manual/en/introduction/Creating-a-scene
+const scene = new THREE.Scene();
+
+//background 
+//colour https://threejs.org/docs/#api/en/math/Color
+const bgcolour = new THREE.Color(0x404040);
+scene.background = new THREE.Color( bgcolour );
+
+//perspective camera (FOV, aspect ratio, clipping plane)
+const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+
+//ambient light
+const light = new THREE.AmbientLight( 0x404040 ); // soft white light
+scene.add( light );
+
+//just a test from https://threejs.org/docs/#api/en/lights/SpotLight for spotlight lighting
+const spotLight = new THREE.SpotLight( 0xffffff );
+spotLight.position.set( 100, 1000, 100 );
+
+spotLight.castShadow = true;
+
+spotLight.shadow.mapSize.width = 1024;
+spotLight.shadow.mapSize.height = 1024;
+
+spotLight.shadow.camera.near = 500;
+spotLight.shadow.camera.far = 4000;
+spotLight.shadow.camera.fov = 30;
+
+scene.add( spotLight );
+
+
+//RENDER PROPERTIES
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize( window.innerWidth, window.innerHeight );
+document.body.appendChild( renderer.domElement );
+
+//GEOMETRY
+const geometry = new THREE.BoxGeometry(); //cube or geometry
+const material = new THREE.MeshLambertMaterial( { color: "rgb(245, 170, 66)" } ); //object material
+//defined object with geometry and material
+const cube = new THREE.Mesh( geometry, material );
+//adds geometry with material to scene
+scene.add( cube );
+//position
+camera.position.z = 5;
+
+//CUSTOM GEO
+const loader = new GLTFLoader();
+
+loader.load( 'blendermonkey.glb', function ( gltf ) {
+
+	scene.add( gltf.scene );
+    gltf.scale.set(2, 2, 2);
+    gltf.position.y = 4;
+
+}, undefined, function ( error ) {
+
+	console.error( error );
+
+} );
+
+
+//RENDER
+function animate(){
+    requestAnimationFrame(animate);
+    cube.rotation.x += 0.01;
+    cube.rotation.y += 0.01;
+    renderer.render(scene, camera);
+}
+animate();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+</head>
+<link rel="stylesheet" type="text/css" href="style.css">
+<title>3D Art Exhibit by Florence Chang</title>
+<meta name="description" content="currently WIP">
+</head>
+<body>
+<!--Artwork Title and Description-->
+<button id ="id_button_switchmode"class= 'button1'>Perspective</button>
+<button id ="id_button_nextartwork"class= 'button1'>Next</button>
+<button id ="id_button_switchmode2" class="button1">Orbit</button>
+<button id ="id_button_previousartwork"class= 'button1'>Previous</button>
+
+
+<p><div id="title"> </div><div id="description"> </div></p>
+<!--<img src="./images/cafe.png" alt="alternatetext"class='img'>-->
+
+<!--
+<div id="vid"><video width="320" height="240" autoplay>
+    <source src="./videos/cafe_vid.mp4" type="video/mp4">
+</video>
+</div>
+-->
+
+
+<script async src="https://cdn.skypack.dev/three"></script>
+    
+<script type="importmap">
+	{
+		"imports": {
+			"three": "https://cdn.skypack.dev/three@0.132.2/build/three.module.js"
+		}
+	}
+</script>
+
+<script type="module">
+//IMPORTING Three.js from CDN
+import * as THREE from 'three';
+import { GLTFLoader } from "https://cdn.skypack.dev/three@0.132.2/examples/jsm/loaders/GLTFLoader.js";
+import { OrbitControls } from "https://cdn.skypack.dev/three@0.132.2/examples/jsm/controls/OrbitControls.js";
+import { FirstPersonControls } from "https://cdn.skypack.dev/three@0.132.2/examples/jsm/controls/FirstPersonControls.js";
+import Stats from "https://cdn.skypack.dev/three@0.132.2/examples/jsm/libs/stats.module.js";
+import { artworklist } from './artworkInformation.js';
+
+//SETTING THE SCENE
+//source: https://threejs.org/docs/#manual/en/introduction/Loading-3D-models
+//source: https://threejs.org/docs/#manual/en/introduction/Creating-a-scene
+const scene = new THREE.Scene();
+
+
+//perspective camera (FOV, aspect ratio, clipping plane)
+const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+//ambient light
+const light = new THREE.AmbientLight( "rgb(255, 211, 180)" ); // soft white light 0x404040 for white
+scene.add( light );
+
+//BUTTONS
+var updatemode_tofirstperson = false;
+var button_switchmode = document.getElementById("id_button_switchmode")
+button_switchmode.addEventListener("click", function(){
+    updatemode();
+});
+
+
+var button_switchmode2 = document.getElementById("id_button_switchmode2")
+button_switchmode2.addEventListener("click", function(){
+    SetOrbitControlsSettings();
+});
+
+
+var button_nextartwork = document.getElementById("id_button_nextartwork")
+button_nextartwork.addEventListener("click", function(){
+    unloadartwork();
+    incrementartworkindex(1);
+    SetOrbitControlsSettings();
+    SetSceneBackground();
+});
+
+var button_previousartwork = document.getElementById("id_button_previousartwork")
+button_previousartwork.addEventListener("click", function(){
+    unloadartwork();
+    incrementartworkindex(-1);
+    SetOrbitControlsSettings();
+    SetSceneBackground();
+});
+
+function updatemode(){
+    SetFirstPersonControlMode();
+    SetFirstPersonControlsSettings();
+    console.log("updatemode_tofirstperson");
+}
+
+//just a test from https://threejs.org/docs/#api/en/lights/SpotLight for spotlight lighting
+
+/*
+const spotLight = new THREE.SpotLight( 0xffffff ,0.5);
+spotLight.position.set( 100, 1000, 100 );
+
+spotLight.castShadow = true;
+
+spotLight.shadow.mapSize.width = 1024;
+spotLight.shadow.mapSize.height = 1024;
+
+spotLight.shadow.camera.near = 500;
+spotLight.shadow.camera.far = 4000;
+spotLight.shadow.camera.fov = 30;
+
+scene.add( spotLight );
+*/
+
+//RENDER PROPERTIES
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize( window.innerWidth, window.innerHeight );
+document.body.appendChild( renderer.domElement );
+
+renderer.gammaOutput = true;
+
+//resize fix
+//source: https://stackoverflow.com/questions/20290402/three-js-resizing-canvas
+window.addEventListener( 'resize', onWindowResize, false );
+
+function onWindowResize(){
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize( window.innerWidth, window.innerHeight );
+
+}
+var jumps;
+function incrementartworkindex(jumps){
+    currentartwork+=jumps;
+    console.log("next artwork");
+    console.log(currentartwork);
+    loadartwork();
+    LoadArtworkInformation();
+}
+
+
+//LOADING ARTWORK MODELS
+const loader = new GLTFLoader();
+//Artwork Information
+/* see artworkinformation.js*/
+//0-5 at current
+var currentartwork=1;
+
+//LOADING ARTWORK
+var loadedartwork;
+
+function loadartwork(){
+    loader.load( artworklist[currentartwork][0], function ( gltf ) {
+        loadedartwork = gltf.scene;
+        //gltf.material.transparent = true;
+        // set opacity to 50%
+        //gltf.material.opacity = 0.5; 
+        scene.add( loadedartwork );
+        //gltf.scale.set(2, 2, 2);
+        //gltf.position.y = 0;
+
+    }, undefined, function ( error ) {
+        console.error( error );
+
+    } );
+}
+loadartwork();
+
+function unloadartwork(){
+    scene.remove(loadedartwork);
+    console.log("unload");
+}
+
+//CONTROLS
+var controls;
+//CAMERA CONTROLS
+function SetOrbitControlsSettings() {
+    var camera_posx=artworklist[currentartwork][1];
+    var camera_posy=artworklist[currentartwork][2];
+    var camera_posz=artworklist[currentartwork][3];
+    camera.position.set(camera_posx,camera_posy,camera_posz);
+    controls = new OrbitControls(camera, renderer.domElement);
+}
+SetOrbitControlsSettings();
+
+function SetFirstPersonControlMode(){
+    controls = new FirstPersonControls(camera, renderer.domElement);
+}
+
+function SetFirstPersonControlsSettings() {
+    var firstpov = true;
+    console.log("working?");
+    controls = new FirstPersonControls(camera, renderer.domElement);
+    controls.lookSpeed = 0.05;
+    controls.movementSpeed = 12
+    controls.noFly = true;
+    controls.lookVertical = true;
+    controls.constrainVertical = true;
+    controls.verticalMin = 1.0;
+    controls.verticalMax = 2.0;
+    controls.lon = -150;
+    controls.lat = 120;
+    camera.position.set(0,0,0);
+}
+
+//DISPLAY ARTWORK INFORMATION
+//changing HTML elements source: https://www.w3schools.com/js/js_htmldom_html.asp
+function LoadArtworkInformation()   {
+    //artwork title
+    document.getElementById("title").innerHTML = artworklist[currentartwork][4];
+    //artwork description
+    document.getElementById("description").innerHTML = artworklist[currentartwork][5];
+}
+LoadArtworkInformation();
+
+function SetSceneBackground(){
+    //background 
+    //colour https://threejs.org/docs/#api/en/math/Color
+    //var bgcolor = new THREE.Color("rgb(38, 36, 36)");
+    var bgcolor = new THREE.Color(artworklist[currentartwork][6]);
+    //rgb(66, 66, 66) grey
+    //rgb(73, 105, 105) for artwork one
+    //rgb(9, 27, 44) for artwork 6
+    scene.background = new THREE.Color( bgcolor );
+}
+SetSceneBackground();
+
+
+//STATS (temporary)
+//source: https://sbcode.net/threejs/stats-panel/
+const stats = Stats();
+document.body.appendChild(stats.dom);
+
+//clock temporary fix
+var clock = new THREE.Clock();
+
+//RENDER
+function animate(){
+    var delta = clock.getDelta();
+    requestAnimationFrame(animate);
+    //loadedartwork.rotation.y+=0.01;
+    renderer.render(scene, camera);
+    controls.update(delta);
+    stats.update();
+    //CHECK CAMERA POSITION
+    console.log(camera.position);
+    
+}
+animate();
+
+
+
+
+</script>
+</body>
+</html>

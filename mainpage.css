@@ -1,7 +1,7 @@
 
 @font-face {
     font-family: 'Giaza-Stencil';
-    src:  url('../fonts/Giaza-Stencil/Giaza\ Stencil.ttf') format('truetype');
+    src:  url('./fonts/Giaza-Stencil/Giaza\ Stencil.ttf') format('truetype');
 }
 
 @font-face {

@@ -1,0 +1,80 @@
+
+@font-face {
+    font-family: 'Giaza-Stencil';
+    src:  url('../fonts/Giaza-Stencil/Giaza\ Stencil.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Catchy-Mager';
+    src: url('./fonts/Catchy-Mager/CatchyMager-Normal.ttf') format('truetype');
+}
+*{
+    overflow-y: hidden;
+}
+div {
+    background-color: black;
+    height: 100%;
+    width: 2500px;
+    overflow-x: scroll;
+    overflow-x: hidden;
+    /*hides scrollbars*/
+}
+
+body{
+    background-color: black;
+}
+
+.heading_main{
+    font-family: 'Giaza-Stencil';
+    position: absolute;
+    text-align: left;
+    font-size: 50px;
+    left: 40px;
+    color: white;
+}
+.heading_sub{
+    font-family: 'Catchy-Mager';
+    position: absolute;
+    color: white;
+}
+
+.grid_overall{
+    position: absolute;
+    max-height: 90%;
+    left:40px;
+    top:30%;
+    overflow-x: hidden;
+}
+
+.grid  {
+    display: grid;
+    grid-template-columns: 300px 300px 800px 200px;
+    grid-template-rows: 70%;
+    column-gap: 20px;
+
+}
+
+.example{
+    grid-column-end: span 1;
+    grid-row-end: span 2;
+
+}
+
+.grid div:nth-child(even){
+    background-color: black;
+}
+.grid div:nth-child(odd){
+    background-color: grey;
+}
+
+.images{
+    overflow-y: hidden;
+    max-width: 30%;
+    width: 30%;
+    height:auto;
+    size: 50px;
+}
+
+.images2{
+    max-height: 180px;
+}

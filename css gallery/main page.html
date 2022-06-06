@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<head>
+<meta name ="viewport" content="width=device-width, initial-scale=1.0">
+<link rel ="stylesheet" href="mainpage.css">
+<!--for a form <input id="files" type="file" multiple="multiple" accept="image/jpeg, image/png, image/jpg">-->
+<!--<output id="result"></output>-->
+<title>Exhibit- Gallery View</title>
+</head>
+<body>
+<div class="heading_main"><p>Visual Arts BoW Stuff</p></div>
+<!--<div class="heading_sub"><p>just stuff</p></div>-->
+<div class="grid_overall">
+    <div class="grid" id="grid1" autoplay loop>
+        <video height="400px"autoplay loop><source src = "/videos/window_vidv.mp4" type = video/mp4>Unsupported</video>
+        <video height="400px"autoplay loop><source src = "/videos/cafe_vid.mp4" type = video/mp4>Unsupported</video>
+        <video height="400px"autoplay loop><source src = "/videos/cquay_final_vidv.mp4" type = video/mp4>Unsupported</video>
+        <video height="400px"autoplay loop><source src = "/videos/bus_vidv.mp4" type = video/mp4>Unsupported</video>
+
+    </div>
+</div>
+<button id="temp">Next Page</button>
+<script>
+/*additional stuff under grid
+<div class="image"><img src="./dugongs.jpg" class="images2"></img> </div>
+<div><img src="./dugongs.jpg" class="images"></img> </div>
+<div><img src="./dugongs.jpg" class="images"></img> </div>
+<div><img src="./dugongs.jpg" class="images"></img> </div>
+<div><img src="./dugongs.jpg" class="images"></img> </div>
+<div><img src="./dugongs.jpg" class="images"></img> </div>
+*/
+var imgheight= "30px";
+//window.onload = document.getElementsByClassName("images").style.height = imgheight;
+
+function Update(){
+    //console.log(document.getElementById("files"));
+};
+//img name,
+artworkpreviewlist = [
+    "window_vidv.mp4",
+    //"cafe.png",
+    //"241221_4.png",
+    //"bus.png",
+
+];
+
+var tempbutton = document.getElementById("temp");
+tempbutton.addEventListener("click", function(){
+    window.location.href = "../threejstest.html";
+});
+var row = "1";
+var example = 1;
+/* loop for images
+//append multiple images
+function addImage(){
+    for (let i=0; i<1; i++){
+        var img1 = document.createElement("video");
+        
+        img1.setAttribute('src', artworkpreviewlist[i]);
+        img1.onclick= function() {
+            console.log("img clicked");
+            //src: https://stackoverflow.com/questions/2932782/global-variables-in-javascript-across-multiple-files
+            localStorage.setItem('Data', example);
+            window.location.href = "../threejstest.html";
+        }
+        img1.style.height = "400px";
+        //var div = document.createElement("div");
+        //document.getElementById("addimage").appendChild(div);
+        document.getElementById("grid1").appendChild(img1);
+        //document.getElementById("addimage").img1.style.width = "20px";
+        console.log(img1);
+
+    }
+}
+addImage();
+*/
+</script>
+
+</body>
+
+</html>
